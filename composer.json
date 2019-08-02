@@ -1,0 +1,46 @@
+{
+    "name": "mxl/laravel-queue-rate-limit",
+    "description": "Simple Laravel queue rate limiting",
+    "keywords": [
+        "queue",
+        "rate",
+        "limit",
+        "laravel"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/mxl/laravel-queue-rate-limit",
+    "support": {
+        "issues": "https://github.com/mxl/laravel-queue-rate-limit/issues",
+        "source": "https://github.com/mxl/laravel-queue-rate-limit"
+    },
+    "type": "library",
+    "require": {
+        "php": ">=7.0",
+        "illuminate/queue": "^5.5",
+        "illuminate/contracts": "^5.5",
+        "illuminate/cache": "^5.5",
+        "illuminate/log": "^5.5"
+    },
+    "authors": [
+        {
+            "name": "Michael Ledin",
+            "email": "mledin89@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MichaelLedin\\LaravelQueueRateLimit\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MichaelLedin\\LaravelQueueRateLimit\\QueueServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
+    "minimum-stability": "stable"
+}
