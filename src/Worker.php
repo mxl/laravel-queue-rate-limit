@@ -39,7 +39,7 @@ class Worker extends \Illuminate\Queue\Worker
                                 $rateLimiter,
                                 $logger)
     {
-        parent::__construct($manager, $events, $isDownForMaintenance);
+        parent::__construct($manager, $events, $exceptions, $isDownForMaintenance);
 
         $this->rateLimits = $rateLimits ?? [];
         $this->rateLimiter = $rateLimiter;
