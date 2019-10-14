@@ -31,9 +31,15 @@ class Worker extends \Illuminate\Queue\Worker
      * @param RateLimiter $rateLimiter
      * @param LogManager $logger
      */
-    public function __construct(QueueManager $manager, Dispatcher $events, ExceptionHandler $exceptions, $rateLimits, $rateLimiter, $logger)
+    public function __construct(QueueManager $manager,
+                                Dispatcher $events,
+                                ExceptionHandler $exceptions,
+                                callable $isDownForMaintenance,
+                                $rateLimits,
+                                $rateLimiter,
+                                $logger)
     {
-        parent::__construct($manager, $events, $exceptions);
+        parent::__construct($manager, $events, $isDownForMaintenance);
 
         $this->rateLimits = $rateLimits ?? [];
         $this->rateLimiter = $rateLimiter;
