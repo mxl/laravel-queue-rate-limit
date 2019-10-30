@@ -3,7 +3,15 @@ Simple Laravel queue rate limiting
 
 ## Installation
 ```bash
-$ composer require mxl/laravel-queue-rate-limit:^1.0
+$ composer require mxl/laravel-queue-rate-limit
+```
+
+2.* versions are compatible with Laravel 6.
+
+For Laravel 5 use 1.* versions:
+
+```bash
+$ composer require mxl/laravel-queue-rate-limit "^1.0"
 ```
 
 Laravel 5.5+ will use the [auto-discovery](https://medium.com/@taylorotwell/package-auto-discovery-in-laravel-5-5-ea9e3ab20518) feature to add `MichaelLedin\LaravelQueueRateLimit\QueueServiceProvider::class` to providers.
