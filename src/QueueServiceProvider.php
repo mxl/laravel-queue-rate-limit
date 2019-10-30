@@ -4,7 +4,7 @@ namespace MichaelLedin\LaravelQueueRateLimit;
 
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Debug\ExceptionHandler;
-use Illuminate\Log\LogManager;
+use Psr\Log\LoggerInterface;
 
 class QueueServiceProvider extends \Illuminate\Queue\QueueServiceProvider
 {
@@ -22,7 +22,7 @@ class QueueServiceProvider extends \Illuminate\Queue\QueueServiceProvider
                 $isDownForMaintenance,
                 $this->app['config']->get('queue.rateLimits'),
                 $this->app[RateLimiter::class],
-                $this->app[LogManager::class]
+                $this->app[LoggerInterface::class]
             );
         });
     }

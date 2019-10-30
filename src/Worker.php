@@ -5,8 +5,8 @@ namespace MichaelLedin\LaravelQueueRateLimit;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Events\Dispatcher;
-use Psr\Log\LoggerInterface;
 use Illuminate\Queue\QueueManager;
+use Psr\Log\LoggerInterface;
 
 class Worker extends \Illuminate\Queue\Worker
 {
@@ -21,7 +21,7 @@ class Worker extends \Illuminate\Queue\Worker
     private $rateLimiter;
 
     /**
-     * @var LogManager
+     * @var LoggerInterface
      */
     private $logger;
 
