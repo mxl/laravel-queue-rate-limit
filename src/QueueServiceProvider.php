@@ -8,6 +8,12 @@ use Psr\Log\LoggerInterface;
 
 class QueueServiceProvider extends \Illuminate\Queue\QueueServiceProvider
 {
+    public function register()
+    {
+        $this->registerLogger();
+        parent::register();
+    }
+
     protected function registerWorker()
     {
         $this->app->singleton('queue.worker', function () {
@@ -22,8 +28,14 @@ class QueueServiceProvider extends \Illuminate\Queue\QueueServiceProvider
                 $isDownForMaintenance,
                 $this->app['config']->get('queue.rateLimits'),
                 $this->app[RateLimiter::class],
-                $this->app[LoggerInterface::class]
+                $this->app['queue.logger']
             );
+        });
+    }
+
+    protected function registerLogger() {
+        $this->app->singleton('queue.logger', function () {
+            return $this->app[LoggerInterface::class];
         });
     }
 }
