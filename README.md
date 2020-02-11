@@ -51,6 +51,44 @@ Mail::queue(..., 'default');
 
 You'll see that only `mail` queue jobs will be rate limited while `default` queue jobs will run normally.
 
+## Disable logging
+
+Extend `QueueServiceProvider`:
+
+```php
+<?php
+
+namespace App\Providers;
+
+class QueueServiceProvider extends \MichaelLedin\LaravelQueueRateLimit\QueueServiceProvider
+{
+    protected function registerLogger()
+    {
+        $this->app->singleton('queue.logger', function () {
+            return null;
+        });
+    }
+}
+```
+
+Add it to `providers` array in `config/app.php`:
+
+```php
+<?php
+
+return [
+    // ...
+    'providers' => [
+        // Laravel Framework Service Providers
+        // ...
+        // Application Service Providers
+        // ...
+        App\Providers\QueueServiceProvider::class,
+        // ...
+    ]
+];
+```
+
 ## Maintainers
 
 - [@mxl](https://github.com/mxl)
