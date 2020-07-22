@@ -1,4 +1,9 @@
 # laravel-queue-rate-limit
+[![Current version](https://img.shields.io/packagist/v/mxl/laravel-queue-rate-limit.svg?logo=composer)](https://packagist.org/packages/mxl/laravel-queue-rate-limit)
+[![Monthly Downloads](https://img.shields.io/packagist/dm/mxl/laravel-queue-rate-limit.svg)](https://packagist.org/packages/mxl/laravel-queue-rate-limit/stats)
+[![Total Downloads](https://img.shields.io/packagist/dt/mxl/laravel-queue-rate-limit.svg)](https://packagist.org/packages/mxl/laravel-queue-rate-limit/stats)
+[![Build Status](https://travis-ci.org/mxl/laravel-queue-rate-limit.svg?branch=master)](https://travis-ci.org/mxl/laravel-queue-rate-limit)
+
 Simple Laravel queue rate limiting
 
 ## Installation
@@ -99,6 +104,11 @@ return [
 ## Maintainers
 
 - [@mxl](https://github.com/mxl)
+
+## Other useful Laravel packages from the author
+
+- [mxl/laravel-api-key](https://github.com/mxl/laravel-api-key) - API Key Authorization for Laravel with replay attack prevention;
+- [mxl/laravel-job](https://github.com/mxl/laravel-job) - dispatch a job from command line and more;
 
 ## License
 
