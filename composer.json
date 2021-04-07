@@ -15,7 +15,7 @@
     },
     "type": "library",
     "require": {
-        "php": "^7.3",
+        "php": "^7.3||^8.0",
         "illuminate/queue": "^7.0||^8.0",
         "illuminate/contracts": "^7.0||^8.0",
         "illuminate/cache": "^7.0||^8.0",
