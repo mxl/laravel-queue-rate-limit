@@ -8,7 +8,7 @@ Simple Laravel queue rate limiting
 
 ## Installation
 
-3.* versions are compatible only with Laravel 7.
+3.* versions are compatible only with Laravel 7+.
 
 ```bash
 $ composer require mxl/laravel-queue-rate-limit
