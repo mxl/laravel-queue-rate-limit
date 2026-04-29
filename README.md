@@ -34,12 +34,44 @@ Add rate limits to `config/queue.php`:
 
 ```php
 'rateLimits' => [
-     'mail' => [ // queue name
+    'mail' => [ // queue name, not connection name
         'allows' => 1, // 1 job
         'every' => 5 // per 5 seconds
-     ]
+    ]
 ]
 ```
+
+The `rateLimits` array keys must match the queue names your worker processes. For example, if your database connection uses `queue.connections.database.queue` set to `payments`, configure `rateLimits.payments` and run the worker for that queue:
+
+```php
+// config/queue.php
+'connections' => [
+    'database' => [
+        'driver' => 'database',
+        'queue' => 'payments',
+        // ...
+    ],
+],
+
+'rateLimits' => [
+    'payments' => [
+        'allows' => 1,
+        'every' => 60,
+    ],
+],
+```
+
+```bash
+$ php artisan queue:work database --queue payments
+```
+
+If you dispatch jobs to a non-default queue, make sure the job uses the same queue name:
+
+```php
+PaymentJob::dispatch($details)->onQueue('payments');
+```
+
+This package rate-limits when workers pop jobs from queues. It does not delay jobs when they are dispatched and does not change `available_at` in the `jobs` database table. For database queues, seeing `available_at` equal to `created_at` is expected unless you dispatch the job with Laravel's own delay API.
 
 ## Usage
 
@@ -113,5 +145,3 @@ return [
 ## License
 
 See the [LICENSE](https://github.com/mxl/laravel-queue-rate-limit/blob/master/LICENSE) file for details.
-
-

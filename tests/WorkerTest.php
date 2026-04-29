@@ -38,6 +38,21 @@ class WorkerTest extends TestCase
         $this->assertSame([['mail', 5]], $rateLimiter->hits);
     }
 
+    public function testSecondJobOnRatedQueueWaitsForRateLimitWindow()
+    {
+        $firstJob = new FakeJob('payment-job-1');
+        $secondJob = new FakeJob('payment-job-2');
+        $connection = new FakeQueue(['payments' => [$firstJob, $secondJob]]);
+        $rateLimiter = new FakeRateLimiter(['payments' => [false, true, false]], ['payments' => 60]);
+        $worker = $this->worker(['payments' => ['allows' => 1, 'every' => 60]], $rateLimiter);
+
+        $this->assertSame($firstJob, $worker->nextJob($connection, 'payments'));
+        $this->assertSame($secondJob, $worker->nextJob($connection, 'payments'));
+        $this->assertSame([60], $worker->sleepCalls);
+        $this->assertSame(['payments', 'payments'], $connection->popCalls);
+        $this->assertSame([['payments', 60], ['payments', 60]], $rateLimiter->hits);
+    }
+
     public function testRateLimitedEmptyQueueStillReturnsNull()
     {
         $connection = new FakeQueue(['mail' => []]);
