@@ -48,37 +48,53 @@ class Worker extends \Illuminate\Queue\Worker
 
     protected function getNextJob($connection, $queue)
     {
-        $job = null;
-        foreach (explode(',', $queue) as $queue) {
-            $rateLimit = $this->rateLimits[$queue] ?? null;
-            if ($rateLimit) {
-                if (!isset($rateLimit['allows']) || !isset($rateLimit['every'])) {
-                    throw new \RuntimeException('Set "allows" and "every" fields for "' . $queue . '" rate limit.');
-                }
-                $this->log('Rate limit is set for queue ' . $queue);
-                if ($this->rateLimiter->tooManyAttempts($queue, $rateLimit['allows'])) {
-                    $availableIn = $this->rateLimiter->availableIn($queue);
-                    $this->log('Rate limit is reached for queue ' . $queue . '. Next job will be started in ' . $availableIn . ' seconds');
-                    continue;
+        $queues = explode(',', $queue);
+
+        while (true) {
+            $job = null;
+            $rateLimitedAvailableIn = null;
+
+            foreach ($queues as $queue) {
+                $rateLimit = $this->rateLimits[$queue] ?? null;
+                if ($rateLimit) {
+                    if (!isset($rateLimit['allows']) || !isset($rateLimit['every'])) {
+                        throw new \RuntimeException('Set "allows" and "every" fields for "' . $queue . '" rate limit.');
+                    }
+                    $this->log('Rate limit is set for queue ' . $queue);
+                    if ($this->rateLimiter->tooManyAttempts($queue, $rateLimit['allows'])) {
+                        $availableIn = max(1, (int) $this->rateLimiter->availableIn($queue));
+                        $this->log('Rate limit is reached for queue ' . $queue . '. Next job will be started in ' . $availableIn . ' seconds');
+                        if ($connection->size($queue) > 0) {
+                            $rateLimitedAvailableIn = $rateLimitedAvailableIn === null
+                                ? $availableIn
+                                : min($rateLimitedAvailableIn, $availableIn);
+                        }
+                        continue;
+                    } else {
+                        $this->log('Rate limit check is passed for queue ' . $queue);
+                    }
                 } else {
-                    $this->log('Rate limit check is passed for queue ' . $queue);
+                    $this->log('No rate limit is set for queue ' . $queue . '.');
                 }
-            } else {
-                $this->log('No rate limit is set for queue ' . $queue . '.');
+
+                $job = parent::getNextJob($connection, $queue);
+                if ($job) {
+                    if ($rateLimit) {
+                        $this->rateLimiter->hit($queue, $rateLimit['every']);
+                    }
+                    $this->log('Running job ' . $job->getJobId() . ' on queue ' . $queue);
+                    return $job;
+                } else {
+                    $this->log('No available jobs on queue ' . $queue);
+                }
             }
 
-            $job = parent::getNextJob($connection, $queue);
-            if ($job) {
-                if ($rateLimit) {
-                    $this->rateLimiter->hit($queue, $rateLimit['every']);
-                }
-                $this->log('Running job ' . $job->getJobId() . ' on queue ' . $queue);
-                break;
-            } else {
-                $this->log('No available jobs on queue ' . $queue);
+            if ($rateLimitedAvailableIn === null) {
+                return $job;
             }
+
+            $this->sleep($rateLimitedAvailableIn);
         }
-        return $job;
     }
 
 
